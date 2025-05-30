@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 
 
 class IntegerRange:
@@ -18,6 +18,7 @@ class IntegerRange:
         if value not in range(self.min_amount, self.max_amount + 1):
             raise ValueError(f"{value} is out of range"
                              f"({self.min_amount}, {self.max_amount})")
+        setattr(instance, self.protected_name, value)
 
 
 class Visitor:
@@ -34,17 +35,27 @@ class SlideLimitationValidator(ABC):
         self.weight = weight
         self.height = height
 
+    @abstractmethod
+    def can_access(self, visitor: Visitor) -> bool:
+        pass
+
 
 class ChildrenSlideLimitationValidator(SlideLimitationValidator):
     age = IntegerRange(4, 14)
     height = IntegerRange(80, 120)
     weight = IntegerRange(20, 50)
 
+    def can_access(self, visitor: Visitor) -> bool:
+        pass
+
 
 class AdultSlideLimitationValidator(SlideLimitationValidator):
     age = IntegerRange(14, 60)
     height = IntegerRange(120, 220)
     weight = IntegerRange(50, 120)
+
+    def can_access(self, visitor: Visitor) -> bool:
+        pass
 
 
 class Slide:
